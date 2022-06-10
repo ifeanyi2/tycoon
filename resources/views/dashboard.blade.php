@@ -19,14 +19,19 @@
                                 <td>Action</td>
                             </tr>
                             @php($n = 1)
-                                
-                            
                             @foreach($users as $user)
                                 <tr>
                                 <td>{{ $n++ }}</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->created_at->diffForHumans() }}</td>
+                                <td>
+                                    @if($user->created_at == NULL)
+                                        <span class="text-danger">No Date set</span>
+                                    @else
+                                       {{ $user->created_at->diffForHumans()}}     
+                                       
+                                    @endif
+                                </td>
                                 <td>
                                     
                                     <a href="" class="btn btn-info btn-small">Edit</a>
@@ -36,6 +41,7 @@
                             @endforeach
                             
                         </table>
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>
