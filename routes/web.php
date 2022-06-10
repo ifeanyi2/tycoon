@@ -51,6 +51,9 @@ Route::middleware([
     Route::get('/all/brands', [BrandController::class, 'index'])->name("all.brand");
     Route::get('/add/brands', [BrandController::class, 'create'])->name("add.brand");
     Route::post('/create/brands', [BrandController::class, 'saveBrand'])->name("save.brand");
+    Route::get('/edit/brands/{id}', [BrandController::class, 'editBrand'])->name("edit.brand");
+    Route::post('/update/brands/{id}', [BrandController::class, 'updateBrand'])->name("update.brand");
+    Route::get('/delete/brands/{id}', [BrandController::class, 'deleteBrand'])->name("delete.brand");
 
 
 

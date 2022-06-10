@@ -14,16 +14,19 @@
                <a href="{{ route('add.brand') }}" class="btn btn-info mb-3 ml-3">Add new</a>
                <div class="col-md-12">
                    <div class="table-responsive-md">
-                    <table class="table table-bordered">
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>{{ session('success') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    <table class="table table-hover">
                         <tr>
                             <th>s/n</th>
                             <th>Name</th>
-                            <th>Type</th>
-                            <th>Make</th>
                             <th>Model</th>
-                            <th>Engine Size</th>
-                            <th>Power</th>
-                            <th>Color</th>
                             <th>Price</th>
                             <th>Main Image</th>
                             <th>Created At</th>
@@ -35,21 +38,16 @@
                         @else
                            @foreach($brands as $brand)
                            <tr>
-                               <td>{{ $brand->firstItem()+$loop->index }} }}</td>
+                               <td>{{ $brands->firstItem()+$loop->index }}</td>
                                <td>{{ $brand->name }}</td>
-                               <td>{{ $brand->type }}</td>
-                               <td>{{ $brand->make }}</td>
                                <td>{{ $brand->model }}</td>
-                               <td>{{ $brand->engine_size }}</td>
-                               <td>{{ $brand->power }}</td>
-                               <td>{{ $brand->color }}</td>
-                               <td>{{ $brand->price }}</td>
-                               <td>{{ ('image') }}</td>
+                               <td>$ {{ $brand->price }}</td>
+                               <td><img src="{{ asset($brand->image1) }}" alt="{{ $brand->name }}" class="img-responsive" width="100"></td>
                                <td>{{ $brand->created_at->diffForHumans() }}</td>
                                <td>
-                                   <a href="" class="btn btn-info">view</a>
-                                   <a href="" class="btn btn-primary">Edit</a>
-                                   <a href="" class="btn btn-danger">Delete</a>
+                                   <a href="" class="btn btn-info btn-sm">view</a>
+                                   <a href="{{ route('edit.brand', $brand->id) }}" class="btn btn-primary btn-sm">Edit</a>
+                                   <a onclick="return confirm('This Brand Will Be Moved To Archieve, Are You Sure ?')" href="{{ route('delete.brand', $brand->id) }}" class="btn btn-danger btn-sm">Delete</a>
                                </td>
                            </tr>
                                
@@ -59,6 +57,7 @@
 
                         </tr>
                     </table>
+                    {{ $brands->links() }}
                </div>
                </div>
 

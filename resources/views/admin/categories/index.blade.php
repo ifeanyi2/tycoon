@@ -67,7 +67,7 @@
                                 
                                 @foreach ($trashCat as $value)
                                     <tr>
-                                        <td>{{ $category->firstItem()+$loop->index }}</td>
+                                        <td>{{ $trashCat->firstItem()+$loop->index }}</td>
                                         <td>{{ ucwords($value->category_name) }}</td>
                                         <td>{{ ucwords($value->user->name) }}</td>
                                         <td>{{ $value->deleted_at->diffForHumans() }}</td>
