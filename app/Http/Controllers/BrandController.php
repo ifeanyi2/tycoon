@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Brand;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class BrandController extends Controller
 {
@@ -38,14 +39,21 @@ class BrandController extends Controller
         ]);
 
         $brand_main_image = $request->file('image1');
-        $generate_unique = hexdec(uniqid());
-        $image_extension = strtolower($brand_main_image->getClientOriginalExtension());
-        $new_image_name = $generate_unique.".".$image_extension;
-        $upload_location = "uploads/brands/";
-        $for_upload_image = $upload_location.$new_image_name;
+        $name_gen = hexdec(uniqid()).'.'.$brand_main_image->getClientOriginalExtension();
+        Image::make($brand_main_image)->resize(500,400)->save('uploads/brands/'.$name_gen, 90);
 
-        //move the image to a folder
-        $brand_main_image->move($upload_location, $new_image_name);
+        $last_img = 'uploads/brands/'.$name_gen;
+
+
+
+
+        // $image_extension = strtolower($brand_main_image->getClientOriginalExtension());
+        // $new_image_name = $generate_unique.".".$image_extension;
+        // $upload_location = "uploads/brands/";
+        // $for_upload_image = $upload_location.$new_image_name;
+
+        // //move the image to a folder
+        // $brand_main_image->move($upload_location, $new_image_name);
 
         // $extra_image_one = $request->file('image2');
         // $extra_image_two = $request->file('image3');
@@ -67,7 +75,7 @@ class BrandController extends Controller
         $brand->price                       = number_format($request->price, 2, ".", ",");
         $brand->extra                       = $request->extra;
         $brand->description                 = $request->description;
-        $brand->image1                      = $for_upload_image;
+        $brand->image1                      = $last_img;
         $brand->save();
 
         // Redirect
@@ -171,7 +179,7 @@ class BrandController extends Controller
     }
 
     public function deleteArchieve($id){
-        
+        // where we delete permarnetly and remove associated image
     }
    
 }
