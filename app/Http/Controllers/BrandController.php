@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Multipic;
 use Illuminate\Http\Request;
 use Intervention\Image\Facades\Image;
 
@@ -44,19 +45,6 @@ class BrandController extends Controller
 
         $last_img = 'uploads/brands/'.$name_gen;
 
-
-
-
-        // $image_extension = strtolower($brand_main_image->getClientOriginalExtension());
-        // $new_image_name = $generate_unique.".".$image_extension;
-        // $upload_location = "uploads/brands/";
-        // $for_upload_image = $upload_location.$new_image_name;
-
-        // //move the image to a folder
-        // $brand_main_image->move($upload_location, $new_image_name);
-
-        // $extra_image_one = $request->file('image2');
-        // $extra_image_two = $request->file('image3');
 
         $brand = new Brand();
         $brand->name                        = $request->name;
@@ -180,6 +168,113 @@ class BrandController extends Controller
 
     public function deleteArchieve($id){
         // where we delete permarnetly and remove associated image
+    } 
+
+
+    // ********************** multi image upload section
+    public function multiImage()
+    {
+        $images = Multipic::latest()->paginate('10');
+        $brands = Brand::all();
+
+        return view('admin.multi-image.index', compact('images', 'brands'));
+    }
+
+
+    
+    public function saveImages(Request $request)
+    {
+        $validation = $request->validate([
+            'brand_id' => 'required',
+            'images'   => 'required'
+        ]);
+        
+
+
+        $images = $request->file('images');
+
+        foreach($images as $multi_images){
+
+
+            $name_gen = hexdec(uniqid()) . '.' . $multi_images->getClientOriginalExtension();
+            Image::make($multi_images)->resize(300, 300)->save('uploads/multi-images/' . $name_gen, 90);
+
+            $last_img = 'uploads/multi-images/' . $name_gen;
+
+            // Multipic::insert([
+            //     'images' => $last_img,
+            //     'brand_id' => $request->brand_id
+            // ]);
+
+            $multipics = new Multipic();
+            $multipics->images    = $last_img;
+            $multipics->brand_id  = $request->brand_id;
+            $multipics->save();
+
+        }
+
+        return redirect()->route('multi.image')->with('success', 'Images uploaded successfully!');
+
+
+
+    }
+
+    public function editImages($id){
+        $images = Multipic::find($id);
+        $brands = Brand::all();
+    
+
+        return view('admin.multi-image.edit', compact('images', 'brands'));
+    }
+
+    public function updateImages(Request $request, $id){
+        $validation = $request->validate([
+            'brand_id' => 'required',
+            'images' => 'mimes:jpg,jpeg,png',
+        ]);
+
+
+        $old_image = $request->old_image;
+        $brand_main_image = $request->file('images');
+
+        if ($brand_main_image) {
+
+
+            $generate_unique = hexdec(uniqid());
+            $image_extension = strtolower($brand_main_image->getClientOriginalExtension());
+            $new_image_name = $generate_unique . "." . $image_extension;
+            $upload_location = "uploads/multi-images/";
+            $for_upload_image = $upload_location . $new_image_name;
+
+            //move the image to a folder
+            $brand_main_image->move($upload_location, $new_image_name);
+            unlink($old_image);
+
+            $update_images = Multipic::find($id)->update([
+                "brand_id"   => $request->brand_id,
+                "images"     => $for_upload_image
+            ]);
+
+            return Redirect()->route('multi.image')->with('success', 'Image Updated Successfully!!');
+
+
+        } else {
+
+
+            $update_images = Multipic::find($id)->update([
+                "brand_id"  => $request->brand_id,
+            ]);
+
+            return Redirect()->route('multi.image')->with('success', 'Image Updated Successfully!!');
+        }
+
+    }
+
+    public function deleteImages($id){
+        $images = Multipic::find($id);
+        unlink($images->images);
+        $images->delete();
+        return Redirect()->route('multi.image')->with('success', 'Image deleted successfully!!');
     }
    
 }

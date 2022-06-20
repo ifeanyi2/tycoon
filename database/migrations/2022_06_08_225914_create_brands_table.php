@@ -31,8 +31,6 @@ class CreateBrandsTable extends Migration
             $table->text('extra');
             $table->text('description');
             $table->string('image1');
-            $table->string('image2')->nullable();
-            $table->string('image3')->nullable();
             $table->string('price');
             $table->timestamps();
             $table->softDeletes();

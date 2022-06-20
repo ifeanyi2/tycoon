@@ -5,20 +5,21 @@ use App\Http\Controllers\CategoryController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
 
+// Email verification route
+Route::get('/email/verify', function(){
+    return view('auth.verify-email');
+
+})->middleware(['auth'])->name('verification.notice');
+
+
+
+// Home page route
 Route::get('/', function () {
     return view('welcome');
 });
+
+
 
 Route::middleware([
     'auth:sanctum',
@@ -54,6 +55,14 @@ Route::middleware([
     Route::get('/edit/brands/{id}', [BrandController::class, 'editBrand'])->name("edit.brand");
     Route::post('/update/brands/{id}', [BrandController::class, 'updateBrand'])->name("update.brand");
     Route::get('/delete/brands/{id}', [BrandController::class, 'deleteBrand'])->name("delete.brand");
+
+
+    // mutli image Route
+    Route::get('/multi-image-uploads/', [BrandController::class, 'multiImage'])->name('multi.image');
+    Route::post('/save-multi-images/', [BrandController::class, 'saveImages'])->name('store.images');
+    Route::get('/edit-multi-image/{id}', [BrandController::class, 'editImages'])->name('edit.images');
+    Route::post('/update-multi-image/{id}', [BrandController::class, 'updateImages'])->name('update.images');
+    Route::get('/delete-multi-image/{id}', [BrandController::class, 'deleteImages'])->name('delete.images');
 
 
 
