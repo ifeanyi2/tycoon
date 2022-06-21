@@ -29,7 +29,7 @@ Route::middleware([
 
     Route::get('/dashboard', function () {
         $users = User::latest()->paginate('2');
-        return view('dashboard', compact('users'));
+        return view('admin.index', compact('users'));
     })->name('dashboard');
 
 
