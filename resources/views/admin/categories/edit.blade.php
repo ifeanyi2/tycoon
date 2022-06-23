@@ -6,11 +6,17 @@
 @section('admin')
 
 
-<div class="container text-center">
-    <h1 class="card-title">Edit Category</h1>
+<div class="container mt-5">
+
+    <div class="row mt5">
+        <div class="col-md-3 col-lg-3 col-sm-12"></div>
+        <div class="col-md-6 col-lg-6 col-sm-12">
+       
 
             <div class="card">
-
+                 <div class="card-header">
+                         <h1 class="card-title">Edit Category</h1>
+                 </div>
                 <div class="card-body">
                     <form action="{{ route('update.category', $category->id) }}" method="post">
                         @csrf
@@ -27,7 +33,10 @@
                     </form>
                 </div>
             </div>
-        
-</div>
+
+        </div>
+        <div class="col-md-3 col-lg-3 col-sm-12"></div>
+
+    </div>
 </div>
 @endsection

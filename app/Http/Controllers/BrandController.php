@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Multipic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 
 class BrandController extends Controller
@@ -16,13 +18,16 @@ class BrandController extends Controller
     public function index()
     {
 
-        $brands = Brand::latest()->paginate('10');
-       return view('admin.brands.index', compact('brands'));
+        $brands = Brand::latest()->paginate('5');
+
+        $trashBrand = Brand::onlyTrashed()->latest()->paginate('5');
+        return view('admin.brands.index', compact('brands', 'trashBrand'));
     }
 
     public function create()
     {
-         return view('admin.brands.create');
+        $category = Category::all();
+         return view('admin.brands.create', compact('category'));
     }
 
     public function saveBrand(Request $request)
@@ -41,12 +46,12 @@ class BrandController extends Controller
             'color' => 'required|max:255|string',
             'price' => 'required|numeric',
             'image1' => 'required|mimes:jpg,jpeg,png',
+            'category_id' => 'required',
         ]);
 
         $brand_main_image = $request->file('image1');
         $name_gen = hexdec(uniqid()).'.'.$brand_main_image->getClientOriginalExtension();
         Image::make($brand_main_image)->resize(500,400)->save('uploads/brands/'.$name_gen, 90);
-
         $last_img = 'uploads/brands/'.$name_gen;
 
 
@@ -64,6 +69,7 @@ class BrandController extends Controller
         $brand->number_of_seats             = $request->number_of_seats;
         $brand->doors                       = $request->doors;
         $brand->color                       = $request->color;
+        $brand->category_id                 = $request->category_id;
         $brand->price                       = number_format($request->price, 2, ".", ",");
         $brand->extra                       = $request->extra;
         $brand->description                 = $request->description;
@@ -75,8 +81,9 @@ class BrandController extends Controller
     }
 
     public function editBrand($id){
+        $category  = Category::all();
        $brand = Brand::find($id);
-       return view('admin.brands.edit', compact('brand'));
+       return view('admin.brands.edit', compact('brand', 'category'));
     }
 
     public function updateBrand(Request $request, $id){
@@ -92,6 +99,7 @@ class BrandController extends Controller
             'number_of_seats' => 'required|max:255|string',
             'doors' => 'required|max:255|string',
             'color' => 'required|max:255|string',
+            'category_id' => 'required',
             'price' => 'required|max:255|string',
             'image1' => 'mimes:jpg,jpeg,png',
         ]);
@@ -129,6 +137,7 @@ class BrandController extends Controller
                 "number_of_seats"             => $request->number_of_seats,
                 "doors"                       => $request->doors,
                 "color"                       => $request->color,
+                "category_id"                 => $request->category_id,
                 "price"                       => $request->price,
                 "extra"                       => $request->extra,
                 "description"                 => $request->description,
@@ -154,6 +163,8 @@ class BrandController extends Controller
                 "number_of_seats"             => $request->number_of_seats,
                 "doors"                       => $request->doors,
                 "color"                       => $request->color,
+                "category_id"                 => $request->category_id,
+                "brand_id"                    => $request->brand_id,
                 "price"                       => $request->price,
                 "extra"                       => $request->extra,
                 "description"                 => $request->description
@@ -165,9 +176,30 @@ class BrandController extends Controller
 
     }
 
+    public function viewBrand($id){
+        $brand = Brand::find($id);
+        return view('admin.brands.view', compact('brand'));
+    }
+
     public function deleteBrand($id){
         $brand = Brand::find($id)->delete();
         return Redirect()->route('all.brand')->with('success', 'Brand moved to archieve!!');
+    }
+
+    public function restoreDeleteBrand($id){
+        $restore = Brand::withTrashed()->find($id)->restore();
+        return Redirect()->route('all.brand')->with('success', 'Brand restored Successfully!!');
+    }
+
+    public function permanentDeleteBrand($id)
+    {
+        $d  = Brand::find($id);
+        $destroy = Brand::onlyTrashed()->find($id)->forceDelete();
+      
+       
+
+
+        return Redirect()->route('all.brand')->with('success', 'Brand Deleted Permanently!!');
     }
 
     public function deleteArchieve($id){
@@ -279,6 +311,16 @@ class BrandController extends Controller
         unlink($images->images);
         $images->delete();
         return Redirect()->route('multi.image')->with('success', 'Image deleted successfully!!');
+    }
+
+
+
+
+
+    // logout method
+    public function userLogout(){
+        auth()->guard('web')->logout();
+        return redirect()->route('login');
     }
    
 }

@@ -30,7 +30,6 @@
                                 <td>Name</td>
                                 <td>Added By</td>
                                 <td>created At</td>
-                                <td>Updated At</td>
                                 <td>Action</td>
                             </tr>
                         </thead>
@@ -42,10 +41,9 @@
                                 <td>{{ ucwords($value->category_name) }}</td>
                                 <td>{{ ucwords($value->user->name) }}</td>
                                 <td>{{ $value->created_at->diffForHumans() }}</td>
-                                <td>{{ $value->updated_at->diffForHumans() }}</td>
                                 <td>
 
-                                    <a href="{{ route('edit.category', $value->id) }}"
+                                    <a style="width: 54px" href="{{ route('edit.category', $value->id) }}"
                                         class="btn btn-info btn-small">Edit</a>
 
                                     <a onclick="return confirm('Are You sure you want to delete')"

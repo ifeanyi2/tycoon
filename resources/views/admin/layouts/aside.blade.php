@@ -10,13 +10,17 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                                 Categories
                             </a>
-                            <a class="nav-link" href="{{ route('add.brand') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            <a class="nav-link" href="{{ route('all.brand') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                 Brands
                             </a>
                             <a class="nav-link" href="{{ route('multi.image') }}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fas fa-marker"></i></div>
                                 Brand Images
+                            </a>
+                            <a class="nav-link" href="{{ route('site.setting') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>
+                                Site Setting
                             </a>
                         </div>
                     </div>

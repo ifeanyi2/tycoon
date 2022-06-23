@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SettingController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -51,10 +52,16 @@ Route::middleware([
     // --- BRAND SECTION STARTS ---
     Route::get('/all/brands', [BrandController::class, 'index'])->name("all.brand");
     Route::get('/add/brands', [BrandController::class, 'create'])->name("add.brand");
+    Route::get('/view/brand/{id}', [BrandController::class, 'viewBrand'])->name("view.brand");
     Route::post('/create/brands', [BrandController::class, 'saveBrand'])->name("save.brand");
     Route::get('/edit/brands/{id}', [BrandController::class, 'editBrand'])->name("edit.brand");
     Route::post('/update/brands/{id}', [BrandController::class, 'updateBrand'])->name("update.brand");
     Route::get('/delete/brands/{id}', [BrandController::class, 'deleteBrand'])->name("delete.brand");
+
+
+    Route::get('/restore/deleted/brands/{id}', [BrandController::class, 'restoreDeleteBrand'])->name("restore.deleted.brand");
+    
+    Route::get('/permanent/delete/brand/{id}', [BrandController::class, 'permanentDeleteBrand'])->name("permanent.delete.brand");
 
 
     // mutli image Route
@@ -63,6 +70,19 @@ Route::middleware([
     Route::get('/edit-multi-image/{id}', [BrandController::class, 'editImages'])->name('edit.images');
     Route::post('/update-multi-image/{id}', [BrandController::class, 'updateImages'])->name('update.images');
     Route::get('/delete-multi-image/{id}', [BrandController::class, 'deleteImages'])->name('delete.images');
+
+
+
+
+    // site setting route
+    Route::get('/site-setting/', [SettingController::class, 'index'])->name('site.setting');
+
+    Route::post('/update-setting/{id}', [SettingController::class, 'update'])->name('update.setting');
+
+
+    //logout route 
+    Route::get('/user/logout', [BrandController::class, 'userLogout'])->name('user.logout');
+
 
 
 
